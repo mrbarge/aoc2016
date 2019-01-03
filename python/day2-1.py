@@ -33,7 +33,7 @@ def walk(line, coord):
 with open('day2.input') as f:
     data = f.readlines()
 
-coord = (1,3)
+coord = (2,2)
 for line in data:
     digit, coord = walk(line, coord)
     print(digit)
