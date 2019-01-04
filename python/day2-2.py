@@ -34,7 +34,7 @@ def walk(line, coord):
 
     return posToButton(coord), coord
 
-with open('day2.input') as f:
+with open('data/day2.input') as f:
     data = f.readlines()
 
 coord = (1,3)

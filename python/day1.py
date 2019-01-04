@@ -42,7 +42,7 @@ def walk(x, y, direction):
         return x - 1, y
 
 
-with open('day1.input') as f:
+with open('data/day1.input') as f:
     data = [e.strip() for e in f.readline().split(',')]
 
 coord = hqcoord = (0,0)
