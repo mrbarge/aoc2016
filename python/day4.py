@@ -1,7 +1,16 @@
-from collections import defaultdict
+from string import ascii_lowercase
 from collections import Counter
-import itertools
 
+
+def rot_n(n):
+    az = ascii_lowercase
+    letter_pos = {letter: str(index) for index, letter in enumerate(az, start=0)}
+    rot_spaces = n % len(az)
+    rot_az = ''
+    for l in az:
+        rot_az += az[(int(letter_pos[l]) + rot_spaces) % len(az)]
+
+    return str.maketrans(az, rot_az)
 
 with open('data/day4.input') as f:
     data = [e.strip() for e in f.readlines()]
@@ -27,3 +36,11 @@ for line in data:
         sector_sum += int(sector_id)
 
 print(f"Part one: {sector_sum}")
+
+for line in data:
+    encrypted_name = line[:line.rfind('-')].replace('-', '')
+    sector_id = line[line.rfind('-') + 1:line.rfind('[')]
+
+    cipher = rot_n(int(sector_id))
+    print(f"{encrypted_name.translate(cipher)} {sector_id}")
+
