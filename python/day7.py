@@ -19,13 +19,29 @@ def has_abba(address):
 
     return False
 
+def get_abas(address):
+    abas = [''.join((address[i],address[i+1],address[i+2])) for i in range(0,len(address)-2) if address[i] == address[i+2]]
+    return abas
+
 def supported(address):
     if has_abba(filter_hypernet(address)) and not has_abba(filter_non_hypernet(address)):
-        print(f"good: {address}")
         return True
     else:
-        # print(f"bad: {address}")
         return False
+
+def supported_aba(address):
+    abas = get_abas(filter_hypernet(address))
+    for aba in abas:
+        bab = invert_aba(aba)
+        if filter_non_hypernet(address).find(bab) >= 0:
+            return True
+    return False
+
+def invert_aba(aba):
+    return ''.join((aba[1],aba[0],aba[1]))
 
 p1 = len([a for a in data if supported(a)])
 print(f"Part one: {p1}")
+
+p2 = len([a for a in data if supported_aba(a)])
+print(f"Part two: {p2}")
