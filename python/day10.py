@@ -1,6 +1,14 @@
 from enum import Enum
 from collections import defaultdict
 
+def find_next_bot(bots):
+    for botid in bots:
+        if len(bots[botid].chips) >= 2:
+            return botid
+    return -1
+
+
+
 with open('data/day10.input') as f:
     data = [e.strip() for e in f.readlines()]
 
@@ -17,10 +25,10 @@ class Bot:
         self.low_type = None
         self.high_type = None
 
-    def send_low(self, chip, bintype):
+    def send_low(self):
         return (self.low_dest, self.chips[0])
 
-    def send_high(self, chip, bintype):
+    def send_high(self):
         return (self.high_dest, self.chips[1])
 
     def add_chip(self, chip):
@@ -31,6 +39,7 @@ class Bot:
         return len(self.chips) >= 2
 
 bots = defaultdict(Bot)
+outputs = defaultdict(list)
 
 for line in data:
     if line.startswith('value'):
@@ -51,8 +60,31 @@ for line in data:
         bots[source_bot_id].low_dest = low_id
         bots[source_bot_id].high_dest = high_id
 
-bots = {}
-output = {}
-input = {}
 
+done = False
+outputbin = {}
 
+while not done:
+
+    botid = find_next_bot(bots)
+
+    if botid < 0:
+        done = True
+        continue
+
+    if bots[botid].send_low()[1] == 17 and bots[botid].send_high()[1] == 61:
+        print(f"Part one: {botid}")
+
+    if bots[botid].low_type == 'output':
+        outputs[bots[botid].low_dest] = bots[botid].send_low()[1]
+    else:
+        bots[bots[botid].low_dest].add_chip(bots[botid].send_low()[1])
+
+    if bots[botid].high_type == 'output':
+        outputs[bots[botid].high_dest] = bots[botid].send_high()[1]
+    else:
+        bots[bots[botid].high_dest].add_chip(bots[botid].send_high()[1])
+
+    bots[botid].chips = []
+
+print(f"Part two: {outputs[0] * outputs[1] * outputs[2]}")
