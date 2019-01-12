@@ -21,7 +21,7 @@ def print_grid(grid):
                 sys.stdout.write('.')
         sys.stdout.write('\n')
 
-def search(grid, source, dest):
+def search(grid, source, dest, max=50):
     assert source in grid, 'Starting node does not exist'
     assert dest in grid, 'Destination node does not exist'
 
@@ -55,14 +55,17 @@ def search(grid, source, dest):
 
         grid.pop(next_node)
 
+    # part one - just find shortest path to dest
     path = []
     iternode = dest
     while parent_node[iternode] is not None:
         path.append(iternode)
         iternode = parent_node[iternode]
+    print(f"Part one: {len(path)}")
 
-    print(path)
-    return len(path)
+    # part two - find all nodes with a distance of 50
+    fifties = [n for n in distances if distances[n] <= 50]
+    print(f"Part two: {len(fifties)}")
 
 n = 1364
 # n = 10
@@ -76,5 +79,4 @@ for x in range(0,100):
 start = (1,1)
 dest = (31,39)
 # dest = (7,4)
-steps = search(grid,start,dest)
-print(f"Part one: {steps}")
+search(grid,start,dest)
