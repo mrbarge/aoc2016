@@ -10,7 +10,7 @@ def toggle(cmd):
         if cmd[0] == 'inc':
             return f"dec {cmd[1]}"
         else:
-            return ' '.join(cmd)
+            return f"inc {cmd[1]}"
 
     elif len(cmd) > 2:
         # multi-arg instructions
@@ -36,6 +36,9 @@ i = 0
 reg['a'] = 7
 
 while i < len(data):
+
+    print(reg)
+
     cmd = data[i].split()
 
     if cmd[0] == 'cpy':
@@ -54,16 +57,27 @@ while i < len(data):
 
     elif cmd[0] == 'jnz':
         src = cmd[1]
+        dst = cmd[2]
 
         # validate jnz args
         if is_number(dst):
-            jmp = int(cmd[2])
-            if (is_number(src) and int(src) != 0) or reg[src] != 0:
+            jmp = int(dst)
+        else:
+            jmp = reg[dst]
+
+        if is_number(src):
+            cmp = int(src)
+        else:
+            cmp = reg[src]
+
+        if 0 <= (i+jmp) < len(data):
+            if cmp != 0:
                 i += jmp
             else:
                 i += 1
         else:
             i += 1
+            continue
 
     elif cmd[0] == 'inc':
         src = cmd[1]
@@ -78,11 +92,11 @@ while i < len(data):
     elif cmd[0] == 'tgl':
 
         if len(cmd) == 2 and is_number(cmd[1]) and (int(cmd[1]) + i) < len(data):
-            new_cmd = toggle(cmd)
+            new_cmd = toggle(data[int(cmd[1])+i])
             data[int(cmd[1])+i] = new_cmd
         elif len(cmd) == 2 and not is_number(cmd[1]):
             if (reg[cmd[1]] + i) < len(data):
-                new_cmd = toggle(cmd)
+                new_cmd = toggle(data[reg[cmd[1]]+i])
                 data[reg[cmd[1]] + i] = new_cmd
 
         i += 1
