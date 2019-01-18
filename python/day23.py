@@ -3,7 +3,9 @@ from collections import defaultdict
 with open('data/day23.input') as f:
     data = [e.strip() for e in f.readlines()]
 
-def toggle(cmd):
+def toggle(line):
+
+    cmd = line.split()
 
     if len(cmd) == 2:
         # one argument instructions
@@ -37,7 +39,7 @@ reg['a'] = 7
 
 while i < len(data):
 
-    print(reg)
+    print(f"{reg} - {data[i]}")
 
     cmd = data[i].split()
 
@@ -95,7 +97,7 @@ while i < len(data):
             new_cmd = toggle(data[int(cmd[1])+i])
             data[int(cmd[1])+i] = new_cmd
         elif len(cmd) == 2 and not is_number(cmd[1]):
-            if (reg[cmd[1]] + i) < len(data):
+            if 0 <= (reg[cmd[1]] + i) < len(data):
                 new_cmd = toggle(data[reg[cmd[1]]+i])
                 data[reg[cmd[1]] + i] = new_cmd
 
@@ -104,4 +106,3 @@ while i < len(data):
         print(f"Bad line: {cmd}")
 
 print(reg)
-    # print(i)
