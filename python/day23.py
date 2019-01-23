@@ -1,4 +1,5 @@
 from collections import defaultdict
+import sys
 
 with open('data/day23.input') as f:
     data = [e.strip() for e in f.readlines()]
@@ -40,7 +41,8 @@ reg['a'] = 7
 while i < len(data):
 
     print(f"{reg} - {data[i]}")
-
+    if i % 100000 == 0:
+        print(i)
     cmd = data[i].split()
 
     if cmd[0] == 'cpy':
@@ -106,3 +108,15 @@ while i < len(data):
         print(f"Bad line: {cmd}")
 
 print(reg)
+
+
+# Analysis of sample register output for values of a such as 7 and 8
+# revealed that:
+# b would count down from the 'a' initial value
+# a would multiple by the value of b
+# then when be became one a would increment by 6474, before the program
+# terminated.
+# so for a initial value of 9, the value of a when the program terminated
+# would be (9*8*7*6*5*4*3*2)+6474
+# extrapolating this out to an initial value of 12, this became a result of
+# 479008474
