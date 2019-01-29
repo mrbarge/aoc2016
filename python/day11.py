@@ -7,6 +7,8 @@ class Generator(Enum):
     PLUTONIUM = -3
     CURIUM = -4
     RUTHIEM = -5
+    ELERIUM = -6
+    DILITHIUM = -7
 
 
 class Chip(Enum):
@@ -15,10 +17,13 @@ class Chip(Enum):
     PLUTONIUM = 3
     CURIUM = 4
     RUTHIEM = 5
+    ELERIUM = 6
+    DILITHIUM = 7
 
 def is_complete(floor):
-    s = sum([x.value for x in floor])
-    return s == 0
+    return len(floor)+1 == 10
+    # s = sum([x.value for x in floor])
+    # return s == 0
 
 def valid_floor(floor):
     for c in Chip:
@@ -35,15 +40,54 @@ def floors_to_list(floors):
             ret.append((f,x))
     return ret
 
+
+def load_from_floor(elevator, floors, floor_num):
+    while not elevator_full(elevator) and len(floors[floor_num]) > 0:
+        elevator.append(floors[floor_num].pop())
+    return elevator, floors
+
+
+def elevator_full(elevator):
+    return len(elevator) == 2
+
+
+def load_from_elevator(elevator, floors, floor_num):
+    if len(elevator) > 0:
+        floors[floor_num].append(elevator.pop())
+    return elevator, floors
+
+
 floors = defaultdict(list)
 
-floors[1] = [Generator.PROMETHIUM,Chip.PROMETHIUM]
+floors[1] = [Generator.PROMETHIUM,Chip.PROMETHIUM,Generator.DILITHIUM,Chip.DILITHIUM,Generator.ELERIUM,Chip.ELERIUM]
 floors[2] = [Generator.COBALT,Generator.CURIUM,Generator.RUTHIEM,Generator.PLUTONIUM]
 floors[3] = [Chip.COBALT,Chip.CURIUM,Chip.RUTHIEM,Chip.PLUTONIUM]
 floors[4] = []
 
 seen = []
-elevator = 1
+elevator = []
+elevator_floor = 1
+moves = 0
 
-# while not is_complete(floors[1]):
+# Load the elevator with the first two elements in the first floor
+elevator, floors = load_from_floor(elevator, floors, elevator_floor)
+
+while not is_complete(floors[4]):
+
+    while not elevator_full(elevator) and elevator_floor > 1:
+        elevator_floor -= 1
+        elevator, floors = load_from_floor(elevator, floors, elevator_floor)
+        moves += 1
+
+    while elevator_floor < 4:
+        elevator_floor += 1
+        elevator, floors = load_from_floor(elevator, floors, elevator_floor)
+        moves += 1
+
+    # unload on top floor
+    load_from_elevator(elevator, floors, 4)
+
+    print(f"elevator: {elevator} floors: {floors[4]}")
+
+print(f"Part two: {moves}")
 
